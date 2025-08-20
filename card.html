@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+        integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2rem;
+            align-items: center;
+            height: 100vh;
+            padding: 1rem;
+            background-image: linear-gradient(to bottom right,
+                    #e0f2fe,
+                    /* sky-100 */
+                    #e0e7ff,
+                    /* indigo-100 */
+                    #f3e8ff
+                    /* purple-100 */
+                );
+        }
+
+        .card {
+
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+            border-radius: 1rem;
+            min-width: 30vw;
+            font-size: medium;
+            height: fit-content;
+        }
+
+        @media screen and (max-width:700px) {
+            .card {
+                width: 80%;
+                font-size: medium;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+        }
+
+        strong {
+            margin-right: 1rem;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .justify-bet {
+            justify-content: space-between;
+        }
+
+        .gap {
+            gap:0.5rem;
+            overflow-wrap: anywhere;
+            
+        }
+        .font{
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1> 🔐 Password Manager</h1>
+        <div class="card">
+            <h2>${title}</h2>
+            <div class="flex justify-bet">
+                <strong>Website : </strong> <a href="#"> ${website} </a>
+            </div>
+            <div class="flex justify-bet">
+                <strong>Username :</strong>
+                <div class="flex gap">
+                    <span id="user">${username} </span>
+                    <i id="usernameicon" class="fa-solid fa-eye" onclick="toggleusername()"></i>
+                </div>
+            </div>
+
+            <div class="flex justify-bet">
+                <strong>Password :</strong>
+                <div class="flex gap">
+                    <span id="pass">${password} </span>
+                    <i id="passwordicon" class="fa-solid fa-eye" onclick="togglepassword()"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let bool = false
+    let toggleusername = () => {
+        let el = document.getElementById('user')
+        el.className = (el.innerHTML == username)?  'font':''
+        let icon = document.getElementById('usernameicon')
+        icon.className = (icon.className == 'fa-solid fa-eye')? 'fa-solid fa-eye-slash': 'fa-solid fa-eye'
+        el.innerHTML = (el.innerHTML === username) ? '&#10033;'.repeat(Math.min(el.innerHTML.length, 8)) : username
+    }
+    let togglepassword = () => {
+        let el = document.getElementById('pass')
+        el.className = (el.innerHTML == password)?  'font':''
+        let icon = document.getElementById('passwordicon')
+        icon.className = (icon.className == 'fa-solid fa-eye')? 'fa-solid fa-eye-slash': 'fa-solid fa-eye'
+        el.innerHTML = (el.innerHTML == password) ? '&#10033;'.repeat(Math.min(el.innerHTML.length, 8)) : password
+    }
+</script>
+
+</html>
