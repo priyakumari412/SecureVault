@@ -27,9 +27,9 @@ let adduser = async (req, res) => {
 
     // console.log(existuser)
     let obj = joi.object({
-        username: joi.string().lowercase().min(3).required(),
-        email: joi.string().email().lowercase().required(),
-        masterpassword: joi.string().min(8).required()
+        username: joi.string().lowercase().min(3).trim().replace(/\s+/g, '').required(),
+        email: joi.string().email().lowercase().trim().replace(/\s+/g, '').required(),
+        masterpassword: joi.string().min(8).trim().replace(/\s+/g, '').required()
     })
 
     let { value, error } = obj.validate({
@@ -65,8 +65,23 @@ let adduser = async (req, res) => {
 let finduser = async (req, res) => {
     try {
         let { username, masterpassword } = req.body
+        let obj = joi.object({
+            username: joi.string().lowercase().min(3).trim().replace(/\s+/g, '').required(),
+            masterpassword: joi.string().min(8).trim().replace(/\s+/g, '').required()
+        })
 
-        let founduser = await usermodel.findOne({ username: username })
+        let { value, error } = obj.validate({
+            username,
+            masterpassword
+        })
+
+        if (error) {
+            res.send({
+                error: error.details[0].message,
+            })
+            return
+        }
+        let founduser = await usermodel.findOne({ username: value.username })
 
         if (!founduser) {
             if (!username || !masterpassword) {
@@ -431,8 +446,8 @@ let subscription = async (req, res) => {
             },
 
 
-            success_url: `${process.env.SUCCESS_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CANCEL_URL}/suberror`,
+            success_url: `${process.env.SUCCESS_URL}`,
+            cancel_url: `${process.env.CANCEL_URL}`,
             client_reference_id: objectid
         })
 
@@ -491,8 +506,24 @@ let authenticateuser = async (req, res) => {
     try {
         let { username, masterpassword } = req.body
 
-        let founduser = await usermodel.findOne({ username: username })
+        let obj = joi.object({
+            username: joi.string().trim().replace(/\s+/g, '').required(),
+            masterpassword: joi.string().trim().replace(/\s+/g, '').required()
+        })
 
+        const { value, error } = obj.validate({
+            username,
+            masterpassword
+        })
+
+        if (error) {
+            res.send({
+                msg: 'joi error',
+                error
+            })
+            return
+        }
+        let founduser = await usermodel.findOne({ username: value.username })
         if (!founduser) {
 
             if (username && masterpassword && founduser == null) {
@@ -503,7 +534,7 @@ let authenticateuser = async (req, res) => {
             }
         }
 
-        let originalpassword = await bcrypt.compare(masterpassword, founduser.masterpassword)
+        let originalpassword = await bcrypt.compare(value.masterpassword, founduser.masterpassword)
         if (originalpassword !== true) {
             res.send({
                 error: 'Please enter valid masterpassword!'
@@ -520,8 +551,10 @@ let authenticateuser = async (req, res) => {
 
     } catch (error) {
         res.send({
+            msg: 'another error',
             error,
         })
+        console.log(error)
     }
 
 }

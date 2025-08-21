@@ -1,8 +1,24 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const joi = require('joi')
 const validate = async (req, res, next) => {
-    let { masterpassword,username } = req.body
-    // console.log(req.body.masterpassword)
+    let { masterpassword, username } = req.body
+    let obj = joi.object({
+        masterpassword: joi.string().trim().replace(/\s+/g, '').required()
+    })
+
+    const { value, error } = obj.validate({
+        masterpassword
+    })
+
+    if (error) {
+        res.send({
+            msg: 'joi error',
+            error
+        })
+        return
+    }
+    
     try {
         let token = await req.headers.authorization
         if (!token) {
@@ -17,7 +33,7 @@ const validate = async (req, res, next) => {
             return
         }
         let verify = jwt.verify(token, process.env.JWT_SECRET)
-        if (verify !== masterpassword) {
+        if (verify !== value.masterpassword) {
             res.send({
                 error: 'User not authenticated!'
             })
