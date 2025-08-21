@@ -6,9 +6,7 @@ const { router } = require('./routes/allroutes')
 const path = require('path')
 require('dotenv').config()
 app.use(express.json())
-app.use(cors({
-    origin: `${process.env.BASE_URL}`
-}))
+app.use(cors())
 app.use(express.static(path.join(__dirname, 'dist')))
 
 app.get('*', (req,res)=>{
